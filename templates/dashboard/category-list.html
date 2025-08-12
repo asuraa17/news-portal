@@ -1,0 +1,33 @@
+{% extends "dashboard/index.html" %}
+
+{% block title %}Manage Categories{% endblock %}
+
+{% block content %}
+  <h2>Category List</h2>
+  <a href="{% url 'dashboard-category-add' %}" class="btn btn-success">Add New Category</a>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Category Name</th>
+                <th>Icon</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ category.name }}</td>
+                <td>{{ category.icon }}</td>
+                <td>{{ category.description }}</td>
+                <td>
+                    <a href="{% url 'dashboard-category-edit' category.id %}" class="btn btn-success">Edit</a>
+                    <a href="{% url 'dashboard-category-delete' category.id %}" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

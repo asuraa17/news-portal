@@ -1,0 +1,40 @@
+{% extends "dashboard/index.html" %}
+
+{% block title %}Manage Posts{% endblock %}
+
+{% block content %}
+  <h2>Post List</h2>
+  <a href="{% url 'dashboard-post-add' %}" class="btn btn-success">Add New Post</a>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Featured Image</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for post in posts %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><img src="{{ post.featured_image.url }}" class="featured-image"></td>
+                <td>{{ post.title }}</td>
+                <td>{{ post.category }}</td>
+                <td>
+                    {% for tag in post.tag.all %}
+                        {{ tag.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td>
+                    <a href="{% url 'dashboard-post-edit' post.id %}" class="btn btn-success">Edit</a>
+                    <a href="{% url 'dashboard-post-delete' post.id %}" class="btn btn-danger">Delete</a>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% include 'dashboard/sidebar.html' %}
+
+<div class="main-content">
+    <header>Confirm Delete</header>
+    <p>Are you sure you want to delete "{{ object }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-success">Cancel</a>
+    </form>
+</div>

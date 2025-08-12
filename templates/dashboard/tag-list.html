@@ -1,0 +1,30 @@
+{% extends "dashboard/index.html" %}
+
+{% block title %}Manage Tags{% endblock %}
+
+{% block content %}
+  <h2>Tag List</h2>
+  <a href="{% url 'dashboard-tag-add' %}" class="btn btn-success">Add New Tag</a>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tag Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tag in tags %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ tag.name }}</td>
+        <td>
+          <a href="{% url 'dashboard-tag-edit' tag.id %}" class="btn btn-success">Edit</a>
+          <a href="{% url 'dashboard-tag-delete' tag.id %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

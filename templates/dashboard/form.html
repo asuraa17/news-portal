@@ -1,0 +1,13 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% include 'dashboard/sidebar.html' %}
+
+<div class="main-content">
+    <header>{% if object %}Edit Tag{% else %}Add Tag{% endif %}</header>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Save</button>
+        <a href="{% url 'dashboard-tags' %}" class="btn btn-danger">Cancel</a>
+    </form>
+</div>

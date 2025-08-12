@@ -1,0 +1,11 @@
+<div class="sidebar" id="sidebar">
+    <h2>Dashboard</h2>
+    <ul>
+        <li><a href="{% url 'dashboard-tags' %}">Tags</a></li>
+        <li><a href="{% url 'dashboard-categories' %}">Categories</a></li>
+        <li><a href="{% url 'dashboard-posts' %}">Posts</a></li>
+    </ul>
+</div>
+<button class="toggle-btn" id="toggle-btn">☰</button>
+<script src="{% static 'js/dashboard.js' %}"></script>
+

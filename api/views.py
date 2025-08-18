@@ -1,10 +1,10 @@
-from api.serializers import AdvertisementSerializer, GroupSerializer, NewsLetterSerializer, PostSerializer, UserSerializer, TagSerializer, CategorySerializer, PostPublishSerializer
+from api.serializers import AdvertisementSerializer, CommentSerializer, ContactSerializer, GroupSerializer, NewsLetterSerializer, PostSerializer, UserSerializer, TagSerializer, CategorySerializer, PostPublishSerializer
 
 from django.shortcuts import render
 from django.contrib.auth.models import Group, User
 from django.utils import timezone
 
-from newspaper.models import Advertisement, Newsletter, Post, Tag, Category
+from newspaper.models import Advertisement, Comment, Contact, Newsletter, Post, Tag, Category
 
 from rest_framework import status, exceptions, permissions, viewsets
 from rest_framework.views import APIView
@@ -29,6 +29,7 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all().order_by('name')
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticated]
+
 
 class TagViewSet(viewsets.ModelViewSet):
     """
@@ -97,11 +98,11 @@ class PostViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
 
-class PostbyCategoryViewSet(viewsets.ModelViewSet):
+class PostbyCategoryViewSet(ListAPIView):
     
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -113,11 +114,11 @@ class PostbyCategoryViewSet(viewsets.ModelViewSet):
           
         return queryset
 
-class PostbyTagViewSet(viewsets.ModelViewSet):
+class PostbyTagViewSet(ListAPIView):
     
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -136,11 +137,11 @@ class AdvertisementViewSet(viewsets.ModelViewSet):
     """
     queryset = Advertisement.objects.all().order_by('title')
     serializer_class = AdvertisementSerializer
-    permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.AllowAny]
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
-            return [permissions.AllowAny()]
+            return [permissions.IsAdminUser()]
         
         return super().get_permissions()
 
@@ -191,3 +192,39 @@ class NewsLetterViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         raise exceptions.MethodNotAllowed(request.method)
 
+class ContactViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows contacts to be viewed or edited.
+    """
+    queryset = Contact.objects.all()
+    serializer_class = ContactSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve", "destroy"]:
+            return [permissions.IsAdminUser()]
+        
+        return super().get_permissions()
+    
+    def update(self, request, *args, **kwargs):
+        raise exceptions.MethodNotAllowed(request.method)
+
+class CommentListCreateAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [permissions. IsAuthenticated()]
+        return [permissions.AllowAny()]
+    
+    def get(self, request, post_id, *args, **kwargs):
+        comments = Comment.objects.filter(post=post_id).order_by("-created_at")
+        serialized_data = CommentSerializer(comments, many=True).data
+        return Response(serialized_data, status=status.HTTP_200_OK)
+
+    def post(self, request, post_id, *args, **kwargs):
+        serializer = CommentSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(post_id=post_id, user=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)

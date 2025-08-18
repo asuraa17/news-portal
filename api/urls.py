@@ -11,6 +11,7 @@ router.register(r'categories', views.CategoryViewSet)
 router.register(r'posts', views.PostViewSet)
 router.register(r'advertisements', views.AdvertisementViewSet)
 router.register(r'newsletter', views.NewsLetterViewSet)
+router.register(r'contact', views.ContactViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
@@ -21,5 +22,6 @@ urlpatterns = [
     path('draftposts/', views.DraftListView.as_view(), name="draftpost-api"),
     path('draftdetail/<int:pk>/', views.DraftDetailView.as_view(), name="draftdetail-api"),
     path('postpublish/', views.PostPublishView.as_view(), name="postpublish-api"),
+    path('post/<int:post_id>/comments/', views.CommentListCreateAPIView.as_view(), name="postcomment-api"),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]

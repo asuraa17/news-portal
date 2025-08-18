@@ -12,7 +12,6 @@ class CommentForm(forms.ModelForm):
         fields = ["post","content"]
 
 class NewsletterForm(forms.ModelForm):
-
     class Meta:
         model = Newsletter
         fields = "__all__"
